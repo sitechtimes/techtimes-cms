@@ -112,21 +112,11 @@ export default {
     },
     async publishDraft() {
       try {
-        const response = await fetch(`/cms/${this.articleId}/publish`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            position: this.selectedPlace,
-          }),
+        await this.$axios.post(`/cms/${this.articleId}/publish`, {
+          position: this.selectedPlace,
         });
 
-        if (response.ok) {
-          this.$router.push("/");
-        } else {
-          console.log("Error:", response.status);
-        }
+        this.$router.push("/");
       } catch (e) {
         console.log(e);
       }

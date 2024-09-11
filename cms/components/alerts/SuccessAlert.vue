@@ -1,7 +1,7 @@
 <!-- TODO: make alert dynamic and allow to pass prop type -->
 <template>
   <div
-    class="py-3 pl-4 pr-10 leading-normal text-green-700 bg-green-100 rounded-lg flex center items-center justify-between"
+    class=" py-3 pl-4 pr-10 leading-normal text-green-700 bg-green-100 rounded-lg flex center items-center justify-between"
     role="alert"
   >
     <p class="text-sm font-bold inline-block">
@@ -26,7 +26,7 @@
       <button
         @click="dismissAlert"
         type="button"
-        class="-mr-1 flex p-2 rounded-md hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
+        class="-mr-1 flex p-2 rounded-md hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2 inline-block"
       >
         <span class="sr-only">Dismiss</span>
 
@@ -53,12 +53,12 @@
 <script>
 export default {
   props: {
-    message: String,
+    message: String
   },
   methods: {
     dismissAlert() {
       this.$emit("dismissAlert");
-    },
-  },
+    }
+  }
 };
 </script>
