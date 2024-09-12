@@ -1,6 +1,8 @@
 <template>
   <div>
-    <p :class="textColor" class="block text-sm font-medium">{{ currentArticleMessage }}</p>
+    <p :class="textColor" class="block text-sm font-medium">
+      {{ currentArticleMessage }}
+    </p>
   </div>
 </template>
 
@@ -10,31 +12,32 @@ export default {
     position: String,
     category: String,
   },
-  data(){
+  data() {
     return {
-      currentArticleTitle: ''
-    }
+      currentArticleTitle: "",
+    };
   },
   watch: {
     position: function () {
       this.currentHomepage();
-    }
+    },
   },
   methods: {
     async currentHomepage() {
       try {
-        if (this.position !== null || this.position === 'none') {
-          const categories = await this.$axios.get(`articles/homepage?category=${this.category}&position=${this.position}`);
+        if (this.position !== null || this.position === "none") {
+          const categories = await this.$axios.get(
+            `articles/homepage?category=${this.category}&position=${this.position}`
+          );
 
-          if(categories.data.length > 0) {
+          if (categories.data.length > 0) {
             this.currentArticleTitle = categories.data[0].title;
-          }else{
+          } else {
             this.currentArticleTitle = null;
           }
-
         }
-      }catch(e) { }
-    }
+      } catch (e) {}
+    },
   },
   computed: {
     currentArticleMessage() {
@@ -42,11 +45,11 @@ export default {
         return `Conflicting Article: ${this.currentArticleTitle}`;
       }
 
-      return "No conflicting article"
+      return "No conflicting article";
     },
     textColor() {
-      return this.currentArticleTitle ? 'text-red-600' : 'text-green-600'
-    }
-  }
-}
+      return this.currentArticleTitle ? "text-red-600" : "text-green-600";
+    },
+  },
+};
 </script>

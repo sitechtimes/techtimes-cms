@@ -113,65 +113,71 @@
     </div>
   </div>
 </template>
+<script>
+import axios from "axios";
+import imageCompression from "browser-image-compression";
+import SuccessAlert from "../components/alerts/SuccessAlert";
 
-<script setup lang="ts">
-const user = ref();
-const image = ref();
-const viewImage = ref();
-const success = ref();
-
-const mounted = async () => {
-  const user: any = await $fetch(`/users/${$auth.user.id}`);
-  user.value = await user.json();
-};
-
-const uploadFile = (file: { target: { files: any[] } }) => {
-  if (file.target.files) {
-    viewImage.value = URL.createObjectURL(file.target.files[0]);
-
-    image.value = file.target.files[0];
-  }
-};
-
-const save = async () => {
-  try {
-    if (image.value) {
-      // TODO: update image compression
-      const imageFile = await imageCompression(image.value, {});
-
-      const fd = new FormData();
-      fd.append("file", imageFile);
-      fd.append("upload_preset", "nuk0splv");
-
-      const req = {
-        url: "https://api.cloudinary.com/v1_1/sitechtimes/image/upload/",
-        data: fd,
-        method: "POST",
-      };
-
-      const res: any = await $fetch(req);
-
-      await $fetch(`users/${$auth.user.id}`, {
-        imageUrl: res.data.url,
-      });
-
-      const user = { ...$auth.user };
-      user.imageUrl = res.data.url;
-      $auth.setUser(user);
-
-      success.value = "Your profile has been successfully saved!";
-    }
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-const dismissAlert = () => {
-  success.value = null;
-};
-
-definePageMeta({
-  middleware: "main-auth",
+export default {
   layout: "dashboard",
-});
+  middleware: ["mainAuth"],
+  components: { SuccessAlert },
+  // TODO: password update
+  data() {
+    return {
+      user: null,
+      image: null,
+      viewImage: null,
+      success: null,
+    };
+  },
+  async mounted() {
+    const user = await this.$axios.get(`/users/${this.$auth.user.id}`);
+    this.user = user.data;
+  },
+  methods: {
+    uploadFile(file) {
+      if (file.target.files) {
+        this.viewImage = URL.createObjectURL(file.target.files[0]);
+
+        this.image = file.target.files[0];
+      }
+    },
+    async save() {
+      try {
+        if (this.image) {
+          // TODO: update image compression
+          const imageFile = await imageCompression(this.image, {});
+
+          const fd = new FormData();
+          fd.append("file", imageFile);
+          fd.append("upload_preset", "nuk0splv");
+
+          const req = {
+            url: "https://api.cloudinary.com/v1_1/sitechtimes/image/upload/",
+            data: fd,
+            method: "POST",
+          };
+
+          const res = await axios(req);
+
+          await this.$axios.put(`users/${this.$auth.user.id}`, {
+            imageUrl: res.data.url,
+          });
+
+          const user = { ...this.$auth.user };
+          user.imageUrl = res.data.url;
+          this.$auth.setUser(user);
+
+          this.success = "Your profile has been successfully saved!";
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    dismissAlert() {
+      this.success = null;
+    },
+  },
+};
 </script>

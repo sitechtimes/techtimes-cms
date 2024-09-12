@@ -23,23 +23,29 @@
     </Table>
   </div>
 </template>
+<script>
+import Table from "../components/Table";
+import UserRow from "../components/rows/UserRow";
 
-<script setup lang="ts">
-const users = ref([]);
-
-const mounted = async () => {
-  const user: any = await $fetch(`/users`);
-  users.value = await user.json();
-};
-
-const sortUsers = (role: any) => {
-  return users.filter((user: any) => {
-    return user.role === role;
-  });
-};
-
-definePageMeta({
-  middleware: ["main-auth", "admin"],
+export default {
+  components: { UserRow, Table },
   layout: "dashboard",
-});
+  middleware: ["mainAuth", "admin"],
+  data() {
+    return {
+      users: [],
+    };
+  },
+  async mounted() {
+    const users = await this.$axios.get(`/users`);
+    this.users = users.data;
+  },
+  methods: {
+    sortUsers(role) {
+      return this.users.filter((user) => {
+        return user.role === role;
+      });
+    },
+  },
+};
 </script>

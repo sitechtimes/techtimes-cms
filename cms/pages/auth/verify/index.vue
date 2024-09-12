@@ -59,9 +59,8 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-definePageMeta({
+<script>
+export default {
   middleware: ["guest"],
-});
+};
 </script>

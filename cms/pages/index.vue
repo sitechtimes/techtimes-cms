@@ -82,54 +82,59 @@
   </div>
 </template>
 
-<script setup lang="ts">
-const tabId = ref(1);
-const articles = ref([]);
-const reviewArticles = ref([]);
-const readyArticles = ref([]);
+<script>
+import ArticleRow from "../components/rows/ArticleRow.vue";
+import TabPanel from "../components/tabs/TabPanel";
+import Table from "../components/Table";
 
-const sortArticles = (status: any) => {
-  return articles.value.filter((article) => {
-    return article.status === status;
-  });
-};
-
-const createArticle = async () => {
-  try {
-    const article: any = await $fetch(`/cms`);
-    useRouter().push({ path: `/articles/${article.data.id}` });
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-const tabClicked = (tabId: { value: any }) => {
-  tabId.value = tabId;
-};
-
-onMounted(() => {
-  async () => {
+export default {
+  layout: "dashboard",
+  middleware: ["mainAuth"],
+  components: { ArticleRow, TabPanel, Table },
+  data() {
+    return {
+      tabId: 1,
+      articles: [],
+      reviewArticles: [],
+      readyArticles: [],
+    };
+  },
+  async mounted() {
     try {
-      const article: any = await $fetch(`cms/`);
-      articles.value = await article.json();
+      const articles = await this.$axios.get(`cms/`);
+      this.articles = articles.data;
 
-      if (["editor", "admin"].includes($store.state.auth.user.role)) {
-        const reviewArticle: any = await $fetch("cms/review");
-        reviewArticles.value = await reviewArticle.json();
+      if (["editor", "admin"].includes(this.$auth.user.role)) {
+        const reviewArticles = await this.$axios.get("cms/review");
+        this.reviewArticles = reviewArticles.data;
       }
 
-      if ($store.state.auth.user.role === "admin") {
-        const readyArticle: any = await $fetch("cms/ready");
-        readyArticles.value = await readyArticle.json();
+      if (this.$auth.user.role === "admin") {
+        const readyArticles = await this.$axios.get("cms/ready");
+        this.readyArticles = readyArticles.data;
       }
     } catch (e) {
       console.log(e);
     }
-  };
-});
+  },
+  methods: {
+    sortArticles(status) {
+      return this.articles.filter((article) => {
+        return article.status === status;
+      });
+    },
+    async createArticle() {
+      try {
+        const article = await this.$axios.post(`/cms`);
+        this.$router.push(`/articles/${article.data.id}`);
+      } catch (e) {
+        console.log(e);
+      }
+    },
 
-definePageMeta({
-  middleware: "main-auth",
-  layout: "dashboard",
-});
+    tabClicked(tabId) {
+      this.tabId = tabId;
+    },
+  },
+};
 </script>

@@ -114,28 +114,36 @@
   </div>
 </template>
 
-<script setup lang="ts">
-const email = ref("");
-const password = ref("");
-const errors = ref(null);
+<script>
+import ErrorMessage from "../../components/ErrorMessage";
+export default {
+  middleware: ["guest"],
+  components: { ErrorMessage },
+  data() {
+    return {
+      email: "",
+      password: "",
+      errors: null,
+    };
+  },
+  methods: {
+    async signIn() {
+      try {
+        const user = await this.$auth.loginWith("local", {
+          data: {
+            email: this.email,
+            password: this.password,
+          },
+        });
 
-const signIn = async () => {
-  try {
-    const user = await $auth.loginWith("local", {
-      data: {
-        email: email,
-        password: password,
-      },
-    });
-
-    $auth.setUser(user.data);
-    useRouter().push({ path: "/" });
-  } catch (err: any) {
-    errors.value = err.response.data.errors;
-  }
+        this.$auth.setUser(user.data);
+        this.$router.push("/");
+      } catch (err) {
+        this.errors = err.response.data.errors;
+      }
+    },
+  },
 };
-
-definePageMeta({
-  middleware: "guest",
-});
 </script>
+
+<style></style>
