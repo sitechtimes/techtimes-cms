@@ -25,7 +25,8 @@
 </template>
 
 <script setup lang="ts">
-const users = ref([]);
+import { ref } from "vue";
+const users = ref<any[]>([]);
 
 const mounted = async () => {
   const user: any = await $fetch(`/users`);
