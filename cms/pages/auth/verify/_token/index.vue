@@ -1,18 +1,20 @@
 <template></template>
 
-<script setup lang="ts">
-onBeforeMount(() => {
-  async () => {
+<script>
+export default {
+  async mounted() {
     try {
-      const resp: any = await $fetch(`/auth/verify/${useRoute().params.token}`);
-      $auth.setUser(await resp.json());
+      const resp = await this.$axios.get(
+        `/auth/verify/${this.$route.params.token}`
+      );
+      this.$auth.setUser(resp.data);
 
-      if ($auth.user.verified) {
-        await useRouter().push({ path: "/" });
+      if (this.$auth.user.verified) {
+        await this.$router.push("/");
       } else {
-        await useRouter().push({ path: "/auth/signup" });
+        await this.$router.push("/auth/signup");
       }
     } catch (e) {}
-  };
-});
+  },
+};
 </script>

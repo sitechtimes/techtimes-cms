@@ -96,36 +96,42 @@
     </div>
   </div>
 </template>
+<script>
+import ErrorMessage from "../../components/ErrorMessage";
 
-<script setup lang="ts">
-const name = ref("");
-const email = ref("");
-const password = ref("");
-const errors = ref(null);
+export default {
+  components: { ErrorMessage },
+  middleware: ["guest"],
+  data() {
+    return {
+      name: "",
+      email: "",
+      password: "",
+      errors: null,
+    };
+  },
+  methods: {
+    async signUp() {
+      try {
+        await this.$axios.post("/auth/signup", {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+        });
 
-const signUp = async () => {
-  try {
-    await fetch("/auth/signup", {
-      name: name,
-      email: email,
-      password: password,
-    });
+        const user = await this.$auth.loginWith("local", {
+          data: {
+            email: this.email,
+            password: this.password,
+          },
+        });
 
-    const user = await $auth.loginWith("local", {
-      data: {
-        email: email,
-        password: password,
-      },
-    });
-
-    $auth.setUser(user.data);
-    useRouter().push({ path: "/auth/verify" });
-  } catch (err: any) {
-    errors.value = err.response.data.errors;
-  }
+        this.$auth.setUser(user.data);
+        this.$router.push("/auth/verify");
+      } catch (err) {
+        this.errors = err.response.data.errors;
+      }
+    },
+  },
 };
-
-definePageMeta({
-  middleware: "guest",
-});
 </script>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <!--  TODO: refactor draft check into separate component  -->
+
     <div class="container mx-auto">
       <div class="max-w-7xl mx-auto px-2 py-4 sm:px-6 lg:px-8">
         <div v-show="article.status === 'draft'">
@@ -367,135 +368,138 @@
   </div>
 </template>
 
-<script setup lang="ts">
-const articleId = ref(useRouter.params.id);
+<script>
+import { VueEditor } from "vue2-editor";
+import SuccessAlert from "../../../components/alerts/SuccessAlert";
+import ErrorMessage from "../../../components/ErrorMessage";
+import FileUpload from "../../../components/FileUpload";
+import WarningAlert from "../../../components/alerts/WarningAlert";
+import PositionAlert from "@/components/position/PositionAlert";
+import axios from "axios";
 
-const preview = ref(false);
-const reviewModel = ref(false);
-const deleteModel = ref(false);
-const sendToDraftModel = ref(false);
-const sendToAdminModel = ref(false);
-const publishedModel = ref(false);
-const open = ref(false);
+export default {
+  layout: "dashboard",
+  middleware: ["mainAuth"],
+  components: {
+    FileUpload,
+    VueEditor,
+    SuccessAlert,
+    ErrorMessage,
+    WarningAlert,
+    PositionAlert,
+  },
+  data() {
+    return {
+      articleId: this.$route.params.id,
 
-const success = ref(null);
-const errors = ref(null);
+      preview: false,
+      reviewModel: false,
+      deleteModel: false,
+      sendToDraftModel: false,
+      sendToAdminModel: false,
+      publishedModel: false,
+      open: false,
 
-const articleImage = ref(null);
-const article = Object;
+      success: null,
+      errors: null,
 
-const customToolbar = [
-  [{ header: [false, 1, 2, 3, 4, 5, 6] }],
-  ["bold", "italic", "underline", "strike"],
-  [{ list: "ordered" }, { list: "bullet" }],
-  [{ script: "sub" }, { script: "super" }],
-  ["clean"],
-];
+      articleImage: null,
+      article: Object,
 
-const saveArticle = async () => {
-  try {
-    // TODO: refactor upload image to cloudinary
-    if (this.articleImage) {
-      const fd = new FormData();
+      customToolbar: [
+        [{ header: [false, 1, 2, 3, 4, 5, 6] }],
+        ["bold", "italic", "underline", "strike"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ script: "sub" }, { script: "super" }],
+        ["clean"],
+      ],
+    };
+  },
 
-      fd.append("file", this.articleImage);
-      fd.append("upload_preset", "rr7kbagm");
-
-      const req = {
-        method: "POST",
-        body: fd,
-      };
-
-      const res = await fetch(
-        "https://api.cloudinary.com/v1_1/sitechtimes/image/upload/",
-        req
-      );
-      const data = await res.json();
-      this.article.imageUrl = data.url;
-    }
-
-    await fetch(`cms/${this.articleId}`, {
-      method: "PUT",
-      body: JSON.stringify(this.article),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    this.errors = null;
-    this.success = "The Article has been successfully saved!";
-  } catch (e) {
-    this.success = null;
-    this.errors = e.response.data.errors;
-  }
-};
-
-const updateArticleStatus = async (status) => {
-  try {
-    await fetch(`cms/${this.articleId}`, {
-      method: "PUT",
-      body: JSON.stringify({ status }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    this.$router.push("/");
-  } catch (e) {
-    // TODO: handle error
-    console.log(e);
-  }
-};
-
-const deleteDraft = async () => {
-  try {
-    await fetch(`cms/${this.articleId}`, {
-      method: "DELETE",
-    });
-    this.$router.push("/");
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-const changeCategory = (category) => {
-  article.value.category = category;
-};
-const uploadImage = (image) => {
-  articleImage.value = image;
-};
-const dismissModelDelete = () => {
-  deleteModel.value = false;
-};
-const dismissModelAlert = () => {
-  reviewModel.value = false;
-};
-const dismissAlert = () => {
-  success.value = null;
-};
-const dismissDraftAlert = () => {
-  sendToDraftModel.value = false;
-};
-
-onBeforeMount(() => {
-  async () => {
+  async beforeMount() {
     // fill editor with info
     try {
-      const res = await fetch(`cms/${this.articleId}`);
-      const article = await res.json();
-      this.article = article;
-      console.log(article);
+      const article = await this.$axios.get(`cms/${this.articleId}`);
+      this.article = article.data;
+      console.log(article.data);
     } catch (e) {
       // TODO: add 404 page
       this.$router.push("/");
     }
-  };
-});
+  },
+  methods: {
+    async saveArticle() {
+      try {
+        // TODO: refactor upload image to cloudinary
+        if (this.articleImage) {
+          const fd = new FormData();
 
-definePageMeta({
-  middleware: ["mainAuth"],
-  layout: "dashboard",
-});
+          fd.append("file", this.articleImage);
+          fd.append("upload_preset", "rr7kbagm");
+
+          const req = {
+            url: "https://api.cloudinary.com/v1_1/sitechtimes/image/upload/",
+            data: fd,
+            method: "POST",
+          };
+
+          const res = await axios(req);
+          this.article.imageUrl = res.data.url;
+        }
+
+        await this.$axios.put(`cms/${this.articleId}`, {
+          ...this.article,
+        });
+
+        this.errors = null;
+        this.success = "The Article has been successfully saved!";
+      } catch (e) {
+        this.success = null;
+        this.errors = e.response.data.errors;
+      }
+    },
+    async updateArticleStatus(status) {
+      try {
+        await this.$axios.put(`cms/${this.articleId}`, {
+          status: status,
+        });
+
+        this.$router.push("/");
+      } catch (e) {
+        // TODO: handle error
+        console.log(e);
+      }
+    },
+
+    async deleteDraft() {
+      try {
+        await this.$axios.delete(`cms/${this.articleId}`);
+        this.$router.push("/");
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    changeCategory(category) {
+      this.article.category = category;
+    },
+    uploadImage(image) {
+      this.articleImage = image;
+    },
+    dismissModelDelete() {
+      this.deleteModel = false;
+    },
+    dismissModelAlert() {
+      this.reviewModel = false;
+    },
+    dismissAlert() {
+      this.success = null;
+    },
+    dismissDraftAlert() {
+      this.sendToDraftModel = false;
+    },
+  },
+};
 </script>
 
 <style>
