@@ -23,6 +23,7 @@
     </Table>
   </div>
 </template>
+
 <script>
 import Table from "../components/Table";
 import UserRow from "../components/rows/UserRow";

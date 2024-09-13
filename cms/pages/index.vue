@@ -29,6 +29,7 @@
         </div>
       </div>
     </div>
+    
     <main>
       <TabPanel @tabClicked="tabClicked" />
 

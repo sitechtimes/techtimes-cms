@@ -10,11 +10,17 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.5.4",
+    "@sitechtimes/shared": "^1.0.27",
+    "axios": "^1.7.7",
+    "cloudinary": "^2.4.0",
+    "core-js": "^3.38.1",
     "nuxt": "^3.13.0",
     "vue": "latest",
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@types/core-js": "^2.5.8",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.45",
     "tailwindcss": "^3.4.10"
