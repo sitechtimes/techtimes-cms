@@ -29,14 +29,14 @@
         </div>
       </div>
     </div>
-    
+
     <main>
       <TabPanel @tabClicked="tabClicked" />
 
       <!--   table  -->
       <div class="pt-6 px-4" v-if="tabId === 1">
         <Table title="Draft">
-          <ArticleRow
+          <RowsArticleRow
             v-for="article in sortArticles('draft')"
             :article="article"
             :key="article.id"
@@ -44,7 +44,7 @@
         </Table>
 
         <Table title="In Review">
-          <ArticleRow
+          <RowsArticleRow
             v-for="article in sortArticles('review')"
             :article="article"
             :key="article.id"
@@ -52,7 +52,7 @@
         </Table>
 
         <Table title="Ready">
-          <ArticleRow
+          <RowsArticleRow
             v-for="article in sortArticles('ready')"
             :article="article"
             :key="article.id"
@@ -62,7 +62,7 @@
 
       <div class="pt-2 px-4" v-if="tabId === 2">
         <Table title="">
-          <ArticleRow
+          <RowsArticleRow
             v-for="article in reviewArticles"
             :article="article"
             :key="article.id"
@@ -72,7 +72,7 @@
 
       <div class="pt-2 px-4" v-if="tabId === 3">
         <Table title="">
-          <ArticleRow
+          <RowsArticleRow
             v-for="article in readyArticles"
             :article="article"
             :key="article.id"
@@ -84,14 +84,9 @@
 </template>
 
 <script>
-import ArticleRow from "../components/rows/ArticleRow.vue";
-import TabPanel from "../components/tabs/TabPanel";
-import Table from "../components/Table";
-
 export default {
   layout: "dashboard",
   middleware: ["mainAuth"],
-  components: { ArticleRow, TabPanel, Table },
   data() {
     return {
       tabId: 1,

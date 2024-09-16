@@ -115,7 +115,6 @@
 </template>
 
 <script>
-import ErrorMessage from "../../components/ErrorMessage";
 export default {
   middleware: ["guest"],
   components: { ErrorMessage },

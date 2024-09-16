@@ -97,8 +97,6 @@
   </div>
 </template>
 <script>
-import ErrorMessage from "../../components/ErrorMessage";
-
 export default {
   components: { ErrorMessage },
   middleware: ["guest"],

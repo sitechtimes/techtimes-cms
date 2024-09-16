@@ -114,10 +114,6 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-import imageCompression from "browser-image-compression";
-import SuccessAlert from "../components/alerts/SuccessAlert";
-
 export default {
   layout: "dashboard",
   middleware: ["mainAuth"],

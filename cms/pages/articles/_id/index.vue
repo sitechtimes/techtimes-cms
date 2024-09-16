@@ -370,12 +370,6 @@
 
 <script>
 import { VueEditor } from "vue2-editor";
-import SuccessAlert from "../../../components/alerts/SuccessAlert";
-import ErrorMessage from "../../../components/ErrorMessage";
-import FileUpload from "../../../components/FileUpload";
-import WarningAlert from "../../../components/alerts/WarningAlert";
-import PositionAlert from "@/components/position/PositionAlert";
-import axios from "axios";
 
 export default {
   layout: "dashboard",

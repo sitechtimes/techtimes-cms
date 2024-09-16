@@ -25,9 +25,6 @@
 </template>
 
 <script>
-import Table from "../components/Table";
-import UserRow from "../components/rows/UserRow";
-
 export default {
   components: { UserRow, Table },
   layout: "dashboard",

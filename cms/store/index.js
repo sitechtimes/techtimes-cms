@@ -1,6 +1,3 @@
-import Vuex from 'vuex';
+import { defineStore } from "pinia";
 
-const createStore = () => {
-  return new Vuex.Store({});
-};
-export default createStore;
+export const useAlertsStore = defineStore("auth", () => {});
