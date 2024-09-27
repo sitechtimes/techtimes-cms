@@ -369,19 +369,9 @@
 </template>
 
 <script>
-import { VueEditor } from "vue2-editor";
-
 export default {
   layout: "dashboard",
   middleware: ["mainAuth"],
-  components: {
-    FileUpload,
-    VueEditor,
-    SuccessAlert,
-    ErrorMessage,
-    WarningAlert,
-    PositionAlert,
-  },
   data() {
     return {
       articleId: this.$route.params.id,

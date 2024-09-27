@@ -26,7 +26,6 @@
 
 <script>
 export default {
-  components: { UserRow, Table },
   layout: "dashboard",
   middleware: ["mainAuth", "admin"],
   data() {

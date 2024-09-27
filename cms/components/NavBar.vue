@@ -148,6 +148,7 @@
     </div>
   </nav>
 </template>
+
 <script>
 export default {
   data() {
@@ -170,6 +171,9 @@ export default {
 
       return this.$auth.user.imageUrl;
     },
+  },
+  mounted() {
+    console.log("navbar");
   },
 };
 </script>

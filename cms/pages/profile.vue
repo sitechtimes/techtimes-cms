@@ -113,11 +113,11 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   layout: "dashboard",
   middleware: ["mainAuth"],
-  components: { SuccessAlert },
   // TODO: password update
   data() {
     return {
