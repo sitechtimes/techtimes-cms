@@ -30,10 +30,8 @@
 </template>
 
 <script>
-import Tab from "./Tab";
 export default {
   name: "TabPanel",
-  components: { Tab },
   data() {
     return {
       openTab: 1,
@@ -48,5 +46,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

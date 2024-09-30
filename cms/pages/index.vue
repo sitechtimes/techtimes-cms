@@ -30,7 +30,7 @@
     </div>
 
     <main>
-      <TabPanel @tabClicked="tabClicked" />
+      <TabsTabPanel @tabClicked="tabClicked" />
 
       <!--   table  -->
       <div class="pt-6 px-4" v-if="tabId === 1">
@@ -94,7 +94,7 @@ export default {
       readyArticles: [],
     };
   },
-  async mounted() {
+  /* async mounted() {
     try {
       const articles = await this.$axios.get(`cms/`);
       this.articles = articles.data;
@@ -111,7 +111,7 @@ export default {
     } catch (e) {
       console.log(e);
     }
-  },
+  }, */
   methods: {
     sortArticles(status) {
       return this.articles.filter((article) => {

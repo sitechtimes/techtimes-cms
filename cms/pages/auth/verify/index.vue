@@ -50,6 +50,7 @@
             stroke-linejoin="round"
           />
         </svg>
+
         <p class="flex-auto text-sm ml-6 max-w-lg">
           <strong class="font-semibold text-gray-200">Don’t see it yet?</strong>
           It might be in your spam folder (ugh) – if so, make sure to click “not
