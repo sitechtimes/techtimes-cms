@@ -2,9 +2,13 @@ import { defineStore } from "pinia";
 
 export const useAdminsStore = defineStore("admin", {
   state: () => ({
-    // your data goes here
-    alerts: [],
+    categories: [],
+    selectedCategory: null,
   }),
-
-  actions: {},
+  actions: {
+    async fetchCategories() {
+      const response = await axios.get("cms/categories");
+      this.categories = response.data;
+    },
+  },
 });
